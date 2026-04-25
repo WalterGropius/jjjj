@@ -1,35 +1,28 @@
 {
-  "name": "floating-laptop",
-  "version": "1.0.0",
-  "description": "Animating GLTFs with react-spring.",
-  "keywords": [
-    "gltf",
-    "animation",
-    "react-spring"
-  ],
-  "main": "src/index.js",
-  "dependencies": {
-    "@react-spring/three": "9.7.2",
-    "@react-spring/web": "9.7.2",
-    "@react-three/drei": "9.77.3",
-    "@react-three/fiber": "8.13.0",
-    "maath": "0.5.3",
-    "react": "18.2.0",
-    "react-dom": "18.2.0",
-    "react-scripts": "5.0.1",
-    "three": "0.152.2"
-  },
-  "devDependencies": {},
+  "name": "line-events",
+  "version": "0.1.0",
+  "private": true,
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test --env=jsdom",
-    "eject": "react-scripts eject"
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
   },
-  "browserslist": [
-    ">0.2%",
-    "not dead",
-    "not ie <= 11",
-    "not op_mini all"
-  ]
+  "dependencies": {
+    "framer-motion": "^11.11.17",
+    "next": "14.2.15",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
+  },
+  "devDependencies": {
+    "@types/node": "^20.16.10",
+    "@types/react": "^18.3.11",
+    "@types/react-dom": "^18.3.0",
+    "autoprefixer": "^10.4.20",
+    "eslint": "^8.57.1",
+    "eslint-config-next": "14.2.15",
+    "postcss": "^8.4.47",
+    "tailwindcss": "^3.4.13",
+    "typescript": "^5.6.2"
+  }
 }

@@ -1,0 +1,71 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --line-red: #ff3427;
+  --line-blue: #240f5a;
+  --line-white: #ffffff;
+}
+
+* {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+html,
+body {
+  background: var(--line-blue);
+  color: var(--line-white);
+  font-family: var(--font-display), 'Helvetica Neue', Arial, sans-serif;
+  font-feature-settings: 'ss01', 'ss02';
+  letter-spacing: -0.02em;
+}
+
+::selection {
+  background: var(--line-red);
+  color: var(--line-blue);
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+/* Marquee */
+@keyframes line-marquee {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+.line-marquee-track {
+  animation: line-marquee 28s linear infinite;
+  will-change: transform;
+}
+
+/* Subtle vertical noise to give the deep blue depth */
+.line-grain {
+  position: relative;
+}
+.line-grain::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background-image: radial-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+  background-size: 3px 3px;
+  mix-blend-mode: overlay;
+  opacity: 0.35;
+}
+
+/* Cursor for the line scrub effect */
+.line-cursor {
+  cursor: crosshair;
+}
