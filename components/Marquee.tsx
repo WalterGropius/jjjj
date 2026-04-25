@@ -5,7 +5,7 @@ const items = ['BUĎTE VIDĚT', 'BUĎTE SLYŠET', 'BUĎTE V PAMĚTI']
 export function Marquee() {
   const row = [...items, ...items, ...items, ...items]
   return (
-    <div className="relative overflow-hidden border-y border-white/10 bg-line-red py-6">
+    <div className="relative overflow-hidden border-y border-line-blue/20 bg-line-red py-6">
       <div className="line-marquee-track flex w-max items-center gap-12 whitespace-nowrap">
         {row.concat(row).map((t, i) => (
           <span
