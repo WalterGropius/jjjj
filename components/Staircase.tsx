@@ -1,6 +1,7 @@
 'use client'
 
 import { motion } from 'framer-motion'
+import { useLayoutEffect, useRef, useState } from 'react'
 
 type Props = {
   top: string
@@ -8,9 +9,6 @@ type Props = {
   topColor?: string
   bottomColor?: string
   lineColor?: string
-  /** Right-shift fraction of container width applied to the bottom word.
-   *  Manual rule: words horizontally overlap by ~one letter. */
-  shift?: number
   size?: 'sm' | 'md' | 'lg' | 'xl'
   className?: string
 }
@@ -23,25 +21,50 @@ const sizes: Record<NonNullable<Props['size']>, string> = {
 }
 
 /**
- * Brand-manual staircase headline (page 18):
- * Top word left-aligned · red line spans container · bottom word right-shifted.
+ * Brand staircase: bottom word's FIRST letter sits directly under top word's
+ * LAST letter (manual page 18). Measured at runtime so any pair fits.
  */
 export function Staircase({
   top,
   bottom,
-  topColor = '#ffffff',
-  bottomColor = '#ff3427',
-  lineColor = '#ff3427',
-  shift = 0.18,
+  topColor,
+  bottomColor,
+  lineColor,
   size = 'lg',
   className = ''
 }: Props) {
+  const topMeasureRef = useRef<HTMLSpanElement>(null)
+  const lastCharRef = useRef<HTMLSpanElement>(null)
+  const containerRef = useRef<HTMLDivElement>(null)
+  const [offset, setOffset] = useState(0)
+
+  useLayoutEffect(() => {
+    const recompute = () => {
+      if (!topMeasureRef.current || !lastCharRef.current) return
+      const topW = topMeasureRef.current.getBoundingClientRect().width
+      const lastW = lastCharRef.current.getBoundingClientRect().width
+      setOffset(Math.max(0, topW - lastW))
+    }
+    recompute()
+    const ro = new ResizeObserver(recompute)
+    if (containerRef.current) ro.observe(containerRef.current)
+    window.addEventListener('resize', recompute)
+    return () => {
+      ro.disconnect()
+      window.removeEventListener('resize', recompute)
+    }
+  }, [top, bottom, size])
+
   return (
     <div
-      className={`block w-full font-display font-black uppercase leading-[0.92] tracking-tightest ${sizes[size]} ${className}`}
+      ref={containerRef}
+      className={`relative w-full font-display font-black uppercase leading-[0.9] tracking-tightest ${sizes[size]} ${className}`}
     >
-      <span className="block whitespace-nowrap pt-[0.2em]" style={{ color: topColor }}>
-        {top}
+      {/* Top word — block for layout, inline-block child for accurate measurement */}
+      <span className="block pt-[0.18em]" style={{ color: topColor ?? 'var(--fg)' }}>
+        <span ref={topMeasureRef} className="inline-block whitespace-nowrap">
+          {top}
+        </span>
       </span>
 
       <motion.span
@@ -50,15 +73,20 @@ export function Staircase({
         whileInView={{ scaleX: 1 }}
         viewport={{ once: true, amount: 0.15 }}
         transition={{ duration: 1.05, ease: [0.85, 0, 0.15, 1] }}
-        style={{ background: lineColor, transformOrigin: 'left' }}
-        className="my-[0.06em] block h-[0.075em] w-full"
+        style={{ background: lineColor ?? 'var(--rule)', transformOrigin: 'left' }}
+        className="my-[0.07em] block h-[0.07em] w-full"
       />
 
       <span
-        className="block whitespace-nowrap pt-[0.2em] text-right"
-        style={{ color: bottomColor, paddingLeft: `${shift * 100}%` }}
+        className="block whitespace-nowrap pt-[0.18em]"
+        style={{ color: bottomColor ?? 'var(--accent)', paddingLeft: `${offset}px` }}
       >
         {bottom}
+      </span>
+
+      {/* Hidden probe to measure last-letter width at the actual rendered size */}
+      <span aria-hidden className="invisible absolute left-0 top-0 -z-10 inline-block whitespace-nowrap">
+        <span ref={lastCharRef}>{top.slice(-1)}</span>
       </span>
     </div>
   )

@@ -1,11 +1,19 @@
 import type { Metadata, Viewport } from 'next'
-import { Inter_Tight } from 'next/font/google'
+import { Inter_Tight, JetBrains_Mono } from 'next/font/google'
 import './globals.css'
+import { NoFlashScript, ThemeProvider } from '@/components/ThemeProvider'
 
 const display = Inter_Tight({
   subsets: ['latin', 'latin-ext'],
-  weight: ['500', '600', '700', '800', '900'],
+  weight: ['400', '500', '600', '700', '800', '900'],
   variable: '--font-display',
+  display: 'swap'
+})
+
+const mono = JetBrains_Mono({
+  subsets: ['latin', 'latin-ext'],
+  weight: ['400', '500'],
+  variable: '--font-mono',
   display: 'swap'
 })
 
@@ -24,15 +32,23 @@ export const metadata: Metadata = {
 }
 
 export const viewport: Viewport = {
-  themeColor: '#240f5a',
+  themeColor: [
+    { media: '(prefers-color-scheme: light)', color: '#ffffff' },
+    { media: '(prefers-color-scheme: dark)', color: '#240f5a' }
+  ],
   width: 'device-width',
   initialScale: 1
 }
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="cs" className={display.variable}>
-      <body className="bg-line-blue text-line-white font-display">{children}</body>
+    <html lang="cs" className={`${display.variable} ${mono.variable}`}>
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: NoFlashScript }} />
+      </head>
+      <body className="bg-bg text-fg font-display">
+        <ThemeProvider>{children}</ThemeProvider>
+      </body>
     </html>
   )
 }

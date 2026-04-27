@@ -7,40 +7,35 @@ export default function NotFound() {
     <main className="relative flex min-h-[100svh] flex-col justify-between px-6 py-10 md:px-10">
       <div
         aria-hidden
-        className="pointer-events-none absolute left-1/2 top-1/2 h-[80vh] w-[80vh] -translate-x-1/2 -translate-y-1/2 rounded-full opacity-30 blur-[180px]"
-        style={{ background: '#ff3427' }}
+        className="pointer-events-none absolute left-1/2 top-1/2 h-[80vh] w-[80vh] -translate-x-1/2 -translate-y-1/2 rounded-full blur-[180px]"
+        style={{ background: 'var(--halo)', opacity: 'var(--halo-alpha)' }}
       />
 
       <header className="relative flex items-center justify-between">
-        <Link href="/" aria-label="LINE EVENTS — domů">
-          <LineLogo variant="redOnBlue" size="sm" />
+        <Link href="/" className="block w-[140px]" aria-label="LINE EVENTS — domů">
+          <LineLogo variant="auto" size="sm" />
         </Link>
-        <span className="text-[0.7rem] font-semibold uppercase tracking-[0.28em] text-line-white/55">
-          404
+        <span className="font-mono text-[0.7rem] uppercase tracking-[0.28em] text-fg-faint">
+          Error · 404
         </span>
       </header>
 
       <section className="relative mx-auto w-full max-w-[1400px]">
-        <p className="mb-6 inline-flex items-center gap-3 text-[0.72rem] font-semibold uppercase tracking-[0.32em] text-line-red">
-          <span aria-hidden className="h-px w-8 bg-line-red" />
+        <p className="mb-6 inline-flex items-center gap-3 font-mono text-[0.62rem] uppercase tracking-[0.32em] text-accent">
+          <span aria-hidden className="h-px w-8 bg-accent" />
           Mimo linii
         </p>
         <Staircase top="ZTRACENI" bottom="V PROSTORU." size="lg" />
-        <p className="mt-10 max-w-xl text-[clamp(1rem,1.4vw,1.3rem)] font-medium leading-snug text-line-white/80">
+        <p className="mt-10 max-w-xl text-[clamp(1rem,1.4vw,1.3rem)] font-medium leading-snug text-fg/80">
           Tahle stránka v naší linii není. Vraťte se zpět a pojďme stavět prostor, který bude vidět.
         </p>
-        <Link
-          href="/"
-          className="group mt-12 inline-flex items-center gap-3 rounded-full bg-line-red px-8 py-4 text-sm font-bold uppercase tracking-[0.22em] text-line-blue transition-transform hover:scale-[1.04]"
-        >
-          <span aria-hidden className="transition-transform group-hover:-translate-x-1">
-            ←
-          </span>
+        <Link href="/" className="pill mt-12 inline-flex">
+          <span aria-hidden>←</span>
           <span>Zpět na hlavní</span>
         </Link>
       </section>
 
-      <footer className="relative text-[0.7rem] uppercase tracking-[0.24em] text-line-white/45">
+      <footer className="relative font-mono text-[0.6rem] uppercase tracking-[0.24em] text-fg-faint">
         LINE EVENTS s.r.o. · info@lineevents.cz · 608 618 253
       </footer>
     </main>
