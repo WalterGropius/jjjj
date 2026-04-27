@@ -4,11 +4,16 @@ import { motion, useMotionValue, useSpring, useTransform } from 'framer-motion'
 import { useEffect, useState } from 'react'
 
 /**
- * Custom cursor: a static up-arrow made of three brand-red strokes —
- * vertical shaft + two head lines forming the tip. The cursor never rotates;
- * on hover the two head strokes splay wider, revealing the three-line
- * construction. Always brand red (no mix-blend-difference) so the colour is
- * consistent in light + dark mode. Disabled on touch devices.
+ * Custom cursor: a 30° tilted up-left arrow built from three brand-red
+ * strokes (shaft + two head strokes). The hot-spot is the tip of the
+ * arrow — that's the point that aligns with the actual cursor location.
+ *
+ * On hover, the two head strokes don't change angle; instead they slide
+ * down the shaft, opening a gap between the bare tip and the head. This
+ * reveals the three-line construction without changing the silhouette.
+ *
+ * Always brand red (no mix-blend-difference) so the colour is identical
+ * in light + dark mode. Disabled on touch (pointer:fine).
  */
 export function Cursor() {
   const x = useMotionValue(-100)
@@ -16,10 +21,10 @@ export function Cursor() {
   const sx = useSpring(x, { stiffness: 700, damping: 40, mass: 0.18 })
   const sy = useSpring(y, { stiffness: 700, damping: 40, mass: 0.18 })
 
-  // Idle = a tight arrow tip; hover = wide splay that visually breaks the
-  // shape into its three constituent strokes.
-  const spread = useMotionValue(18)
-  const sSpread = useSpring(spread, { stiffness: 260, damping: 22 })
+  // Pixel offset of the head V away from the tip (along the shaft).
+  // Idle = 0 (touching tip). Hover = 10 (clear gap).
+  const gap = useMotionValue(0)
+  const sGap = useSpring(gap, { stiffness: 280, damping: 22 })
 
   const [enabled, setEnabled] = useState(false)
 
@@ -40,7 +45,7 @@ export function Cursor() {
     const onOver = (e: MouseEvent) => {
       const t = e.target as HTMLElement
       const interactive = !!t.closest('a, button, [data-cursor="hover"]')
-      spread.set(interactive ? 78 : 18)
+      gap.set(interactive ? 11 : 0)
     }
     window.addEventListener('mousemove', onMove)
     window.addEventListener('mouseover', onOver)
@@ -48,7 +53,7 @@ export function Cursor() {
       window.removeEventListener('mousemove', onMove)
       window.removeEventListener('mouseover', onOver)
     }
-  }, [enabled, x, y, spread])
+  }, [enabled, x, y, gap])
 
   if (!enabled) return null
 
@@ -58,45 +63,56 @@ export function Cursor() {
       style={{ translateX: sx, translateY: sy }}
       className="pointer-events-none fixed left-0 top-0 z-[60]"
     >
-      <div className="relative -translate-x-1/2 -translate-y-1/2">
-        <svg width="64" height="64" viewBox="-32 -32 64 64" className="block overflow-visible">
-          {/* Vertical shaft — never changes length */}
-          <line
-            x1={0}
-            y1={-18}
-            x2={0}
-            y2={18}
-            stroke="#ff3427"
-            strokeWidth={6}
-            strokeLinecap="square"
-          />
-          {/* Two head strokes — splay wider on hover */}
-          <ArrowHead side="left" spread={sSpread} />
-          <ArrowHead side="right" spread={sSpread} />
-        </svg>
-      </div>
+      {/* Tip is at SVG (0,0); we draw the body extending down. The whole arrow
+          is rotated -30° so it leans like a traditional cursor. */}
+      <svg
+        width="56"
+        height="64"
+        viewBox="-28 0 56 64"
+        className="block overflow-visible"
+        style={{ transform: 'rotate(-30deg)', transformOrigin: '0 0' }}
+      >
+        {/* Vertical shaft from the tip down */}
+        <line
+          x1={0}
+          y1={0}
+          x2={0}
+          y2={42}
+          stroke="#ff3427"
+          strokeWidth={6}
+          strokeLinecap="square"
+        />
+        {/* Two head strokes — slide DOWN the shaft on hover (gap from tip) */}
+        <ArrowHead side="left" gap={sGap} />
+        <ArrowHead side="right" gap={sGap} />
+      </svg>
     </motion.div>
   )
 }
 
 function ArrowHead({
   side,
-  spread
+  gap
 }: {
   side: 'left' | 'right'
-  spread: ReturnType<typeof useMotionValue<number>>
+  gap: ReturnType<typeof useMotionValue<number>>
 }) {
+  // Head stroke at fixed 28° from the shaft, length 14.
   const sign = side === 'left' ? -1 : 1
-  // Tip is at (0, -18); head stroke runs back-and-out by 14 units along an
-  // angle = 180° - spread (measured from the +y axis going downward).
-  const x2 = useTransform(spread, (s) => sign * 14 * Math.sin((s * Math.PI) / 180))
-  const y2 = useTransform(spread, (s) => -18 + 14 * Math.cos((s * Math.PI) / 180))
+  const headLen = 14
+  const headAngle = (28 * Math.PI) / 180
+  const dx = sign * headLen * Math.sin(headAngle)
+  const dy = headLen * Math.cos(headAngle)
+
+  // y1 is the inner end (anchored at the tip + gap). y2 is the outer end.
+  const y1 = useTransform(gap, (g) => g)
+  const y2 = useTransform(gap, (g) => g + dy)
 
   return (
     <motion.line
       x1={0}
-      y1={-18}
-      x2={x2}
+      y1={y1}
+      x2={dx}
       y2={y2}
       stroke="#ff3427"
       strokeWidth={6}
