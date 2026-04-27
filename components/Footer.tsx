@@ -1,3 +1,7 @@
+'use client'
+
+import { useState } from 'react'
+import { motion, AnimatePresence } from 'framer-motion'
 import { LineLogo } from './LineLogo'
 
 type Link = { href?: string; label: string }
@@ -14,7 +18,18 @@ const contactCol: Link[] = [
   { href: 'tel:+420608618253', label: '608 618 253' }
 ]
 
+const registry = [
+  { label: 'Obchodní firma', value: 'LINE EVENTS s.r.o.' },
+  { label: 'Datum vzniku a zápisu', value: '11. prosinec 2025' },
+  { label: 'Spisová značka', value: 'C 437855/MSPH — Městský soud v Praze' },
+  { label: 'Identifikační číslo', value: '24057258' },
+  { label: 'Sídlo', value: 'Na květnici 1113/8\nNusle, 140 00 Praha', wide: true },
+  { label: 'Zdroj', value: 'Obchodní rejstřík — aktuální výpis', wide: true }
+]
+
 export function Footer() {
+  const [open, setOpen] = useState(false)
+
   return (
     <footer className="relative border-t border-line px-6 pb-10 pt-20 md:px-10">
       <div className="mx-auto grid max-w-[1600px] gap-16 md:grid-cols-12">
@@ -33,13 +48,53 @@ export function Footer() {
         </div>
       </div>
 
-      <div className="mx-auto mt-16 grid max-w-[1600px] gap-8 border-t border-line pt-8 md:grid-cols-4">
-        <RegistryCell label="Obchodní firma" value="LINE EVENTS s.r.o." />
-        <RegistryCell label="Datum vzniku a zápisu" value="11. prosinec 2025" />
-        <RegistryCell label="Spisová značka" value="C 437855/MSPH — Městský soud v Praze" />
-        <RegistryCell label="Identifikační číslo" value="24057258" />
-        <RegistryCell label="Sídlo" value={'Na květnici 1113/8\nNusle, 140 00 Praha'} className="md:col-span-2" />
-        <RegistryCell label="Zdroj" value="Obchodní rejstřík — aktuální výpis" className="md:col-span-2" />
+      {/* Collapsed by default — full obchodní rejstřík expands on demand */}
+      <div className="mx-auto mt-16 max-w-[1600px] border-t border-line pt-6">
+        <button
+          type="button"
+          onClick={() => setOpen((v) => !v)}
+          aria-expanded={open}
+          aria-controls="registry-block"
+          className="group inline-flex items-center gap-3 font-mono text-[0.7rem] uppercase tracking-[0.28em] text-fg-faint transition-colors hover:text-accent"
+        >
+          <span aria-hidden className="block h-px w-8 bg-current transition-all duration-500 group-hover:w-14" />
+          <span>{open ? 'Skrýt info' : 'Více info — obchodní rejstřík'}</span>
+          <motion.span
+            aria-hidden
+            animate={{ rotate: open ? 180 : 0 }}
+            transition={{ duration: 0.4, ease: [0.85, 0, 0.15, 1] }}
+            className="inline-block translate-y-px text-fg-faint group-hover:text-accent"
+          >
+            ▾
+          </motion.span>
+        </button>
+
+        <AnimatePresence initial={false}>
+          {open && (
+            <motion.div
+              id="registry-block"
+              key="registry"
+              initial={{ height: 0, opacity: 0 }}
+              animate={{ height: 'auto', opacity: 1 }}
+              exit={{ height: 0, opacity: 0 }}
+              transition={{ duration: 0.5, ease: [0.85, 0, 0.15, 1] }}
+              className="overflow-hidden"
+            >
+              <dl className="mt-8 grid gap-8 md:grid-cols-4">
+                {registry.map((r) => (
+                  <div key={r.label} className={r.wide ? 'md:col-span-2' : ''}>
+                    <dt className="font-mono text-[0.6rem] uppercase tracking-[0.28em] text-fg-faint">
+                      {r.label}
+                    </dt>
+                    <dd className="mt-2 whitespace-pre-line text-[0.95rem] leading-snug text-fg/85">
+                      {r.value}
+                    </dd>
+                  </div>
+                ))}
+              </dl>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
 
       <div className="mx-auto mt-12 flex max-w-[1600px] flex-col items-start justify-between gap-4 border-t border-line pt-6 font-mono text-[0.62rem] uppercase tracking-[0.24em] text-fg-faint md:flex-row md:items-center">
@@ -50,27 +105,12 @@ export function Footer() {
   )
 }
 
-function RegistryCell({
-  label,
-  value,
-  className = ''
-}: {
-  label: string
-  value: string
-  className?: string
-}) {
-  return (
-    <div className={className}>
-      <dt className="font-mono text-[0.6rem] uppercase tracking-[0.28em] text-fg-faint">{label}</dt>
-      <dd className="mt-2 whitespace-pre-line text-[0.95rem] leading-snug text-fg/85">{value}</dd>
-    </div>
-  )
-}
-
 function FootCol({ title, items }: { title: string; items: Link[] }) {
   return (
     <div>
-      <h4 className="mb-5 font-mono text-[0.62rem] uppercase tracking-[0.28em] text-accent">{title}</h4>
+      <h4 className="mb-5 font-mono text-[0.62rem] uppercase tracking-[0.28em] text-accent">
+        {title}
+      </h4>
       <ul className="flex flex-col gap-2 text-[0.95rem] text-fg/80">
         {items.map((it, i) => (
           <li key={i}>

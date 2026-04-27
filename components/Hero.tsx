@@ -39,20 +39,17 @@ export function Hero() {
         style={{ background: 'var(--halo)', opacity: 'calc(var(--halo-alpha) * 0.7)' }}
       />
 
-      {/* Top meta row — date, location, status */}
+      {/* Status badge — small, right side */}
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 0.6, delay: 0.2 }}
-        className="absolute inset-x-0 top-24 z-10 hidden md:block"
+        className="absolute right-10 top-24 z-10 hidden md:block"
       >
-        <div className="mx-auto flex max-w-[1600px] items-center justify-between px-10 font-mono text-[0.62rem] uppercase tracking-[0.32em] text-fg-faint">
-          <span>Praha · CZ — 50.06° N · 14.46° E</span>
-          <span className="flex items-center gap-2">
-            <span className="block h-1.5 w-1.5 animate-pulse rounded-full bg-accent" />
-            Bookujeme 2026 / 2027
-          </span>
-        </div>
+        <span className="flex items-center gap-2 font-mono text-[0.62rem] uppercase tracking-[0.32em] text-fg-faint">
+          <span className="block h-1.5 w-1.5 animate-pulse rounded-full bg-accent" />
+          Bookujeme 2026 / 2027
+        </span>
       </motion.div>
 
       <motion.div
@@ -63,7 +60,8 @@ export function Hero() {
           {/* Packshot order from manual page 17: line draws first, then top word, then bottom word.
               The pt on overflow wrappers protects diacritics (Ď, Ě). */}
           <div className="font-display font-black leading-[0.86] tracking-tightest">
-            <div className="overflow-hidden pt-[0.18em]">
+            {/* Headroom inside the slide-in slot must clear the haček on Ď. */}
+            <div className="overflow-hidden pt-[0.32em]">
               <motion.span
                 initial={{ y: '110%' }}
                 animate={{ y: 0 }}
@@ -83,7 +81,7 @@ export function Hero() {
             />
 
             <div className="flex justify-end pr-[0.04em]">
-              <div className="relative overflow-hidden pt-[0.18em] text-[clamp(4rem,15vw,15rem)] leading-[1]">
+              <div className="relative overflow-hidden pt-[0.32em] text-[clamp(4rem,15vw,15rem)] leading-[1]">
                 {/* Invisible spacer sized to the widest rotating word — keeps the slot stable */}
                 <span aria-hidden className="invisible block whitespace-nowrap">V&nbsp;PAMĚTI</span>
                 <AnimatePresence mode="wait">
@@ -93,7 +91,7 @@ export function Hero() {
                     animate={{ y: 0 }}
                     exit={{ y: '-110%' }}
                     transition={{ duration: 0.7, ease: [0.85, 0, 0.15, 1] }}
-                    className="absolute right-0 top-[0.18em] block whitespace-nowrap text-accent"
+                    className="absolute right-0 top-[0.32em] block whitespace-nowrap text-accent"
                   >
                     {rotating[i]}
                   </motion.span>
