@@ -60,13 +60,14 @@ export function Hero() {
           {/* Packshot order from manual page 17: line draws first, then top word, then bottom word.
               The pt on overflow wrappers protects diacritics (Ď, Ě). */}
           <div className="font-display font-black leading-[0.86] tracking-tightest">
-            {/* Headroom inside the slide-in slot must clear the haček on Ď. */}
-            <div className="overflow-hidden pt-[0.32em]">
+            {/* Headroom + leading-[1] so the haček on Ď is INSIDE the line box
+                and well clear of the overflow-hidden top edge. */}
+            <div className="overflow-hidden pt-[0.5em]">
               <motion.span
-                initial={{ y: '110%' }}
+                initial={{ y: '120%' }}
                 animate={{ y: 0 }}
                 transition={{ duration: 0.85, delay: 0.55, ease: [0.85, 0, 0.15, 1] }}
-                className="block text-[clamp(4rem,15vw,15rem)] text-fg"
+                className="block text-[clamp(4rem,15vw,15rem)] leading-[1] text-fg"
               >
                 BUĎTE
               </motion.span>
@@ -81,17 +82,17 @@ export function Hero() {
             />
 
             <div className="flex justify-end pr-[0.04em]">
-              <div className="relative overflow-hidden pt-[0.32em] text-[clamp(4rem,15vw,15rem)] leading-[1]">
+              <div className="relative overflow-hidden pt-[0.5em] text-[clamp(4rem,15vw,15rem)] leading-[1]">
                 {/* Invisible spacer sized to the widest rotating word — keeps the slot stable */}
                 <span aria-hidden className="invisible block whitespace-nowrap">V&nbsp;PAMĚTI</span>
                 <AnimatePresence mode="wait">
                   <motion.span
                     key={rotating[i]}
-                    initial={{ y: '110%' }}
+                    initial={{ y: '120%' }}
                     animate={{ y: 0 }}
-                    exit={{ y: '-110%' }}
+                    exit={{ y: '-120%' }}
                     transition={{ duration: 0.7, ease: [0.85, 0, 0.15, 1] }}
-                    className="absolute right-0 top-[0.32em] block whitespace-nowrap text-accent"
+                    className="absolute right-0 top-[0.5em] block whitespace-nowrap leading-[1] text-accent"
                   >
                     {rotating[i]}
                   </motion.span>
