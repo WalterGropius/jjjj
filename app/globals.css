@@ -97,7 +97,7 @@ html:not([data-theme]) body {
   }
 }
 
-/* ───── Subtle grain over the brand bg ───── */
+/* ───── Subtle grain over the brand bg (3× the previous density) ───── */
 .line-grain {
   position: relative;
 }
@@ -106,8 +106,8 @@ html:not([data-theme]) body {
   position: absolute;
   inset: 0;
   pointer-events: none;
-  background-image: radial-gradient(var(--grain) 1px, transparent 1px);
-  background-size: 3px 3px;
+  background-image: radial-gradient(var(--grain) 1.2px, transparent 1.2px);
+  background-size: 9px 9px;
   mix-blend-mode: overlay;
   opacity: 0.55;
 }

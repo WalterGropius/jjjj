@@ -71,6 +71,29 @@ export function ContactSection() {
             </div>
           </dl>
         </div>
+
+        {/* Geo / location strip */}
+        <div className="mt-16 grid gap-8 border-t border-line pt-8 md:grid-cols-3">
+          <div>
+            <dt className="font-mono text-[0.62rem] uppercase tracking-[0.28em] text-fg-faint">Lokace</dt>
+            <dd className="mt-2 font-mono text-[0.78rem] uppercase tracking-[0.24em] text-fg/85">
+              Praha · Česko
+            </dd>
+          </div>
+          <div>
+            <dt className="font-mono text-[0.62rem] uppercase tracking-[0.28em] text-fg-faint">Souřadnice</dt>
+            <dd className="mt-2 font-mono text-[0.78rem] uppercase tracking-[0.24em] text-fg/85">
+              50.06° N · 14.46° E
+            </dd>
+          </div>
+          <div>
+            <dt className="font-mono text-[0.62rem] uppercase tracking-[0.28em] text-fg-faint">Stav</dt>
+            <dd className="mt-2 inline-flex items-center gap-2 font-mono text-[0.78rem] uppercase tracking-[0.24em] text-fg/85">
+              <span className="block h-1.5 w-1.5 animate-pulse rounded-full bg-accent" />
+              Bookujeme 2026 / 2027
+            </dd>
+          </div>
+        </div>
       </div>
     </section>
   )
