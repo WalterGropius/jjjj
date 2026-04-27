@@ -38,10 +38,11 @@ export function ServicesSection() {
   return (
     <Section
       id="co-delame"
+      number="02"
       eyebrow="LINE / Co děláme"
       headline={{ top: 'EVENT JAKO', bottom: 'NÁSTROJ ZNAČKY.' }}
     >
-      <ul className="divide-y divide-white/10 border-y border-white/10">
+      <ul className="divide-y divide-line border-y border-line">
         {items.map((it, i) => (
           <ServiceRow key={it.no} {...it} index={i} />
         ))}
@@ -59,20 +60,26 @@ function ServiceRow({ no, title, lead, body, index }: RowProps) {
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: '-80px' }}
       transition={{ duration: 0.6, delay: index * 0.05 }}
-      className="group relative grid grid-cols-12 items-baseline gap-4 py-8 transition-colors md:py-10"
+      className="group relative grid grid-cols-12 items-baseline gap-4 py-8 md:py-10"
     >
-      <span className="col-span-2 text-[0.72rem] font-semibold uppercase tracking-[0.28em] text-line-red md:col-span-1">
+      <span className="col-span-2 font-mono text-[0.7rem] uppercase tracking-[0.28em] text-accent md:col-span-1">
         {no}
       </span>
-      <h3 className="col-span-10 font-display text-[clamp(1.8rem,3.4vw,3rem)] font-black uppercase leading-[0.95] tracking-tightest text-line-white transition-transform duration-500 group-hover:translate-x-2 md:col-span-4">
+      <h3 className="col-span-10 font-display text-[clamp(1.8rem,3.4vw,3rem)] font-black uppercase leading-[0.95] tracking-tightest text-fg transition-transform duration-500 ease-line group-hover:translate-x-2 md:col-span-4">
         {title}
       </h3>
       <div className="col-span-12 md:col-span-7">
-        <p className="text-[clamp(1rem,1.3vw,1.25rem)] font-semibold leading-snug text-line-white">
+        <p className="text-[clamp(1rem,1.3vw,1.25rem)] font-semibold leading-snug text-fg">
           {lead}
         </p>
-        <p className="mt-3 max-w-xl text-[0.95rem] leading-relaxed text-line-white/65">{body}</p>
+        <p className="mt-3 max-w-xl text-[0.95rem] leading-relaxed text-fg/65">{body}</p>
       </div>
+
+      {/* Hover line: draws from left under the row */}
+      <span
+        aria-hidden
+        className="pointer-events-none absolute -bottom-px left-0 h-px w-0 origin-left bg-accent transition-all duration-700 ease-line group-hover:w-full"
+      />
     </motion.li>
   )
 }

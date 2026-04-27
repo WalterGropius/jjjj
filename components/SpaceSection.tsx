@@ -30,35 +30,36 @@ export function SpaceSection() {
   return (
     <Section
       id="prostor"
+      number="03"
       eyebrow="LINE / Prostor & modularita"
       headline={{ top: 'PROSTOR', bottom: 'BEZ LIMITŮ.' }}
       intro={
-        <p className="text-[clamp(1.05rem,1.4vw,1.35rem)] font-medium leading-relaxed text-line-white/85">
+        <p>
           Pomocí modulárních systémů budujeme funkční, vizuálně čisté a prémiové prostředí, které se plně
           přizpůsobí vaší vizi.
         </p>
       }
     >
-      <div className="grid grid-cols-1 gap-px overflow-hidden rounded-3xl border border-white/10 bg-white/10 sm:grid-cols-2">
+      <div className="grid grid-cols-1 gap-px overflow-hidden rounded-3xl border border-line bg-line sm:grid-cols-2">
         {pillars.map((p, i) => (
           <motion.div
             key={p.label}
             initial={{ opacity: 0, y: 24 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: '-80px' }}
-            transition={{ duration: 0.6, delay: i * 0.05 }}
-            className="group relative overflow-hidden bg-line-blue p-8 md:p-10"
+            transition={{ duration: 0.6, delay: i * 0.06 }}
+            className="group relative overflow-hidden bg-bg p-8 md:p-10"
           >
             <div className="mb-5 flex items-center gap-3">
               <span
-                className="h-px w-10 bg-line-red transition-all duration-500 group-hover:w-20"
+                className="h-px w-10 bg-accent transition-all duration-500 ease-line group-hover:w-20"
                 aria-hidden
               />
-              <h3 className="font-display text-[clamp(1.3rem,1.8vw,1.7rem)] font-black uppercase tracking-tightest text-line-white">
+              <h3 className="font-display text-[clamp(1.3rem,1.8vw,1.7rem)] font-black uppercase tracking-tightest text-fg">
                 {p.label}
               </h3>
             </div>
-            <p className="text-[0.98rem] leading-relaxed text-line-white/70">{p.body}</p>
+            <p className="text-[0.98rem] leading-relaxed text-fg/70">{p.body}</p>
           </motion.div>
         ))}
       </div>

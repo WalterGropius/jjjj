@@ -1,8 +1,9 @@
 'use client'
 
 import { motion } from 'framer-motion'
+import { useLayoutEffect, useRef, useState } from 'react'
 
-type Variant = 'redOnBlue' | 'redOnWhite' | 'whiteOnBlue' | 'whiteOnRed' | 'blueOnWhite'
+type Variant = 'auto' | 'redOnBlue' | 'redOnWhite' | 'whiteOnBlue' | 'whiteOnRed' | 'blueOnWhite'
 
 type Props = {
   variant?: Variant
@@ -11,7 +12,7 @@ type Props = {
   className?: string
 }
 
-const palette: Record<Variant, { word: string; line: string }> = {
+const palette: Record<Exclude<Variant, 'auto'>, { word: string; line: string }> = {
   redOnBlue: { word: '#ff3427', line: '#ff3427' },
   redOnWhite: { word: '#ff3427', line: '#ff3427' },
   whiteOnBlue: { word: '#ffffff', line: '#ffffff' },
@@ -28,39 +29,68 @@ const sizes = {
 }
 
 /**
- * Manual rule: LINE sits top-left, EVENTS sits bottom-right.
- * The line spans only the wordmark width (not the parent container).
- * The two words horizontally overlap by ~one letter, like the wordmark.
+ * LINE / EVENTS wordmark per manual pages 2–11.
+ * - Top-left LINE
+ * - Red rule (line spans the wordmark width)
+ * - EVENTS shifted so its FIRST E sits under the LAST E of LINE
  */
-export function LineLogo({ variant = 'redOnBlue', size = 'md', animate = false, className = '' }: Props) {
-  const c = palette[variant]
+export function LineLogo({ variant = 'auto', size = 'md', animate = false, className = '' }: Props) {
+  const c = variant === 'auto' ? null : palette[variant]
+  const top = 'LINE'
+  const bottom = 'EVENTS'
+
+  const topRef = useRef<HTMLSpanElement>(null)
+  const lastRef = useRef<HTMLSpanElement>(null)
+  const [offset, setOffset] = useState(0)
+
+  useLayoutEffect(() => {
+    const recompute = () => {
+      if (!topRef.current || !lastRef.current) return
+      const topW = topRef.current.getBoundingClientRect().width
+      const lastW = lastRef.current.getBoundingClientRect().width
+      setOffset(Math.max(0, topW - lastW))
+    }
+    recompute()
+    window.addEventListener('resize', recompute)
+    return () => window.removeEventListener('resize', recompute)
+  }, [size])
+
+  const wordColor = c ? c.word : 'var(--accent)'
+  const lineColor = c ? c.line : 'var(--accent)'
+
   return (
     <span
       className={`relative inline-block font-display font-black leading-[0.86] tracking-tightest ${sizes[size]} ${className}`}
     >
-      <span className="block">
-        <span className="block" style={{ color: c.word }}>
-          LINE
+      <span className="block" style={{ color: wordColor }}>
+        <span ref={topRef} className="inline-block whitespace-nowrap">
+          {top}
         </span>
-        <motion.span
-          aria-hidden
-          initial={animate ? { scaleX: 0 } : { scaleX: 1 }}
-          animate={animate ? { scaleX: 1 } : undefined}
-          transition={{ duration: 1.0, ease: [0.85, 0, 0.15, 1] }}
-          style={{
-            background: c.line,
-            transformOrigin: 'left',
-            display: 'block',
-            height: '0.085em',
-            width: '116%',
-            marginTop: '0.04em',
-            marginBottom: '0.04em',
-            marginLeft: '-0.04em'
-          }}
-        />
-        <span className="block pl-[0.92em]" style={{ color: c.word }}>
-          EVENTS
-        </span>
+      </span>
+      <motion.span
+        aria-hidden
+        initial={animate ? { scaleX: 0 } : { scaleX: 1 }}
+        animate={animate ? { scaleX: 1 } : undefined}
+        transition={{ duration: 1.0, ease: [0.85, 0, 0.15, 1] }}
+        style={{
+          background: lineColor,
+          transformOrigin: 'left',
+          display: 'block',
+          height: '0.085em',
+          marginTop: '0.04em',
+          marginBottom: '0.04em'
+        }}
+        className="w-full"
+      />
+      <span
+        className="block whitespace-nowrap"
+        style={{ color: wordColor, paddingLeft: `${offset}px` }}
+      >
+        {bottom}
+      </span>
+
+      <span aria-hidden className="invisible absolute left-0 top-0 -z-10 whitespace-nowrap">
+        <span ref={lastRef}>{top.slice(-1)}</span>
       </span>
       <span className="sr-only">LINE EVENTS</span>
     </span>

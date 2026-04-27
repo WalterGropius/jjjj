@@ -2,10 +2,46 @@
 @tailwind components;
 @tailwind utilities;
 
+/* ────────────────────────────────────────────────────────────────
+   Theme tokens. Default = dark (manual page 12 mockup).
+   `[data-theme="light"]` flips to manual page 5 (red) accents on white.
+   ────────────────────────────────────────────────────────────────*/
 :root {
-  --line-red: #ff3427;
-  --line-blue: #240f5a;
-  --line-white: #ffffff;
+  --bg: #240f5a;
+  --bg-elev: #2c1666;
+  --fg: #ffffff;
+  --fg-muted: rgba(255, 255, 255, 0.62);
+  --fg-faint: rgba(255, 255, 255, 0.36);
+  --accent: #ff3427;
+  --accent-ink: #240f5a;
+  --line: rgba(255, 255, 255, 0.12);
+  --line-strong: rgba(255, 255, 255, 0.32);
+  --rule: #ff3427;
+  --paper: rgba(255, 255, 255, 0.045);
+  --grain: rgba(255, 255, 255, 0.06);
+  --halo: #ff3427;
+  --halo-alpha: 0.32;
+  --selection-bg: #ff3427;
+  --selection-fg: #240f5a;
+}
+
+[data-theme='light'] {
+  --bg: #ffffff;
+  --bg-elev: #faf7f4;
+  --fg: #240f5a;
+  --fg-muted: rgba(36, 15, 90, 0.7);
+  --fg-faint: rgba(36, 15, 90, 0.42);
+  --accent: #ff3427;
+  --accent-ink: #ffffff;
+  --line: rgba(36, 15, 90, 0.1);
+  --line-strong: rgba(36, 15, 90, 0.32);
+  --rule: #ff3427;
+  --paper: rgba(36, 15, 90, 0.03);
+  --grain: rgba(36, 15, 90, 0.05);
+  --halo: #ff3427;
+  --halo-alpha: 0.18;
+  --selection-bg: #240f5a;
+  --selection-fg: #ffffff;
 }
 
 * {
@@ -15,16 +51,21 @@
 
 html,
 body {
-  background: var(--line-blue);
-  color: var(--line-white);
+  background: var(--bg);
+  color: var(--fg);
   font-family: var(--font-display), 'Helvetica Neue', Arial, sans-serif;
-  font-feature-settings: 'ss01', 'ss02';
-  letter-spacing: -0.02em;
+  letter-spacing: -0.018em;
+  transition: background-color 0.5s ease, color 0.5s ease;
 }
 
 ::selection {
-  background: var(--line-red);
-  color: var(--line-blue);
+  background: var(--selection-bg);
+  color: var(--selection-fg);
+}
+
+/* Hide everything until theme is resolved (prevents FOUC flash) */
+html:not([data-theme]) body {
+  visibility: hidden;
 }
 
 .no-scrollbar::-webkit-scrollbar {
@@ -35,7 +76,7 @@ body {
   scrollbar-width: none;
 }
 
-/* Marquee */
+/* ───── Marquee ───── */
 @keyframes line-marquee {
   from {
     transform: translateX(0);
@@ -46,11 +87,17 @@ body {
 }
 
 .line-marquee-track {
-  animation: line-marquee 28s linear infinite;
+  animation: line-marquee 36s linear infinite;
   will-change: transform;
 }
 
-/* Subtle vertical noise to give the deep blue depth */
+@media (prefers-reduced-motion: reduce) {
+  .line-marquee-track {
+    animation: none;
+  }
+}
+
+/* ───── Subtle grain over the brand bg ───── */
 .line-grain {
   position: relative;
 }
@@ -59,13 +106,54 @@ body {
   position: absolute;
   inset: 0;
   pointer-events: none;
-  background-image: radial-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+  background-image: radial-gradient(var(--grain) 1px, transparent 1px);
   background-size: 3px 3px;
   mix-blend-mode: overlay;
-  opacity: 0.35;
+  opacity: 0.55;
 }
 
-/* Cursor for the line scrub effect */
-.line-cursor {
-  cursor: crosshair;
+/* ───── Swiss baseline grid (faint) ───── */
+.swiss-grid {
+  background-image: linear-gradient(to right, var(--paper) 1px, transparent 1px);
+  background-size: calc(100% / 12) 100%;
+  background-repeat: repeat-x;
+}
+
+/* ───── Cursor accent ───── */
+@media (pointer: fine) {
+  body.with-cursor,
+  body.with-cursor a,
+  body.with-cursor button {
+    cursor: none;
+  }
+}
+
+/* Buttons / pill helper for theme parity */
+.pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.75rem;
+  border-radius: 9999px;
+  padding: 0.95rem 1.75rem;
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  background: var(--accent);
+  color: var(--accent-ink);
+  transition: transform 0.4s cubic-bezier(0.85, 0, 0.15, 1), background 0.3s;
+  will-change: transform;
+}
+.pill:hover {
+  transform: scale(1.04);
+}
+
+/* Reveal: line draws, then text fades */
+@keyframes line-draw {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
 }
