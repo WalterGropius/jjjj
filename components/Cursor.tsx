@@ -12,9 +12,9 @@ import { useEffect, useState } from 'react'
  *   • The whole arrow is rotated -30° around the tip so it reads as a
  *     real cursor.
  *   • The V angle is FIXED (60° total — 30° per side). On hover the
- *     two head strokes keep their angle and inner ends near the tip but
- *     grow LONGER, so the arrowhead opens up while still reading as a
- *     joined arrow rather than splitting into a detached gap.
+ *     two head strokes keep their angle and grow LONGER while their
+ *     inner ends nudge slightly off the shaft, opening a subtle gap
+ *     from the stem while the arrowhead still reads as an arrow.
  *
  * Always brand red — identical in light + dark. Disabled on touch.
  */
@@ -114,9 +114,10 @@ function ArrowHead({
 
   // Length grows with openness; idle keeps the original compact head.
   const headLen = (g: number) => 14 + g * 0.9
-  // Inner end stays near the tip — a slight perpendicular nudge so the two
-  // heads don't perfectly overlap, but they still "almost meet" at the tip.
-  const innerX = (g: number) => sign * g * 0.2
+  // Inner end stays near the tip but is nudged perpendicular to the shaft
+  // so a subtle gap opens between each head and the stem on hover (idle
+  // g=0 keeps them meeting at the tip).
+  const innerX = (g: number) => sign * g * 0.45
 
   const x1 = useTransform(sep, innerX)
   const x2 = useTransform(
