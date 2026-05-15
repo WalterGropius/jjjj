@@ -11,7 +11,7 @@ import { useEffect, useState } from 'react'
  *     being pointed at.
  *   • The whole arrow is rotated -30° around the tip so it reads as a
  *     real cursor.
- *   • The V angle is FIXED (30° total — 15° per side). On hover the
+ *   • The V angle is FIXED (60° total — 30° per side). On hover the
  *     two head strokes don't change angle or length: they translate
  *     outward perpendicular to the shaft, opening a gap between the
  *     shaft and each head and revealing the three-line construction.
@@ -92,7 +92,7 @@ export function Cursor() {
             strokeWidth={6}
             strokeLinecap="square"
           />
-          {/* Two head strokes — fixed 15° each from the shaft. They keep
+          {/* Two head strokes — fixed 30° each from the shaft. They keep
               orientation and length; they only translate outward on hover. */}
           <ArrowHead side="left" sep={sSep} />
           <ArrowHead side="right" sep={sSep} />
@@ -111,7 +111,7 @@ function ArrowHead({
 }) {
   const sign = side === 'left' ? -1 : 1
   const headLen = 14
-  const halfSpread = (15 * Math.PI) / 180 // half of the 30° V
+  const halfSpread = (30 * Math.PI) / 180 // half of the 60° V
 
   // Vector along the head stroke (from inner end → outer end).
   const dx = sign * headLen * Math.sin(halfSpread)
