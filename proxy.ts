@@ -6,9 +6,14 @@ import type { NextRequest } from 'next/server'
  * Static assets and Next.js internals are excluded via the matcher below
  * so the unavailable page itself can load fonts, CSS, and the favicon.
  *
- * Remove this file (or its export) to bring the rest of the site back.
+ * Flip MAINTENANCE_MODE back to true to take the site offline again,
+ * or remove this file (or its export) to bring the rest of the site back.
  */
+const MAINTENANCE_MODE = false
+
 export function proxy(req: NextRequest) {
+  if (!MAINTENANCE_MODE) return NextResponse.next()
+
   const { pathname } = req.nextUrl
   if (pathname === '/unavailable') return NextResponse.next()
 
