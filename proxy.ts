@@ -9,7 +9,7 @@ import type { NextRequest } from 'next/server'
  * Flip MAINTENANCE_MODE back to true to take the site offline again,
  * or remove this file (or its export) to bring the rest of the site back.
  */
-const MAINTENANCE_MODE = false
+const MAINTENANCE_MODE = true
 
 export function proxy(req: NextRequest) {
   if (!MAINTENANCE_MODE) return NextResponse.next()
