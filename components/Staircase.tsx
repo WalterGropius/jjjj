@@ -35,15 +35,23 @@ export function Staircase({
 }: Props) {
   const topMeasureRef = useRef<HTMLSpanElement>(null)
   const lastCharRef = useRef<HTMLSpanElement>(null)
+  const bottomMeasureRef = useRef<HTMLSpanElement>(null)
   const containerRef = useRef<HTMLDivElement>(null)
   const [offset, setOffset] = useState(0)
 
   useLayoutEffect(() => {
     const recompute = () => {
-      if (!topMeasureRef.current || !lastCharRef.current) return
+      if (!topMeasureRef.current || !lastCharRef.current || !containerRef.current) return
       const topW = topMeasureRef.current.getBoundingClientRect().width
       const lastW = lastCharRef.current.getBoundingClientRect().width
-      setOffset(Math.max(0, topW - lastW))
+      const containerW = containerRef.current.getBoundingClientRect().width
+      const bottomW = bottomMeasureRef.current?.getBoundingClientRect().width ?? 0
+      // Ideal stair offset places the bottom word's first letter under the top
+      // word's last letter — but never push it past the container's right edge,
+      // or the headline overflows the viewport on narrow screens.
+      const ideal = Math.max(0, topW - lastW)
+      const maxOffset = Math.max(0, containerW - bottomW)
+      setOffset(Math.min(ideal, maxOffset))
     }
     recompute()
     const ro = new ResizeObserver(recompute)
@@ -78,10 +86,16 @@ export function Staircase({
       />
 
       <span
-        className="block whitespace-nowrap pt-[0.18em]"
-        style={{ color: bottomColor ?? 'var(--accent)', paddingLeft: `${offset}px` }}
+        className="block pt-[0.18em]"
+        style={{ paddingLeft: `${offset}px` }}
       >
-        {bottom}
+        <span
+          ref={bottomMeasureRef}
+          className="inline-block whitespace-nowrap"
+          style={{ color: bottomColor ?? 'var(--accent)' }}
+        >
+          {bottom}
+        </span>
       </span>
 
       {/* Hidden probe to measure last-letter width at the actual rendered size */}

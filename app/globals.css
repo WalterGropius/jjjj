@@ -56,6 +56,10 @@ body {
   font-family: var(--font-display), 'Helvetica Neue', Arial, sans-serif;
   letter-spacing: -0.018em;
   transition: background-color 0.5s ease, color 0.5s ease;
+  /* Safety net: never allow horizontal scroll on mobile. `clip` (not `hidden`)
+     keeps vertical scrolling/anchoring intact while pinning the x-axis. */
+  overflow-x: clip;
+  max-width: 100%;
 }
 
 ::selection {
